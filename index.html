@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>XV Años - Samantha López Atilano</title>
+<!-- BEGIN: External Scripts & Fonts -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&amp;family=Montserrat:wght@300;400;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- END: External Scripts & Fonts -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#E7A1B0", // Palo de Rosa
+            "gold": "#D4AF37",
+            "background-light": "#FFF9FA",
+            "overlay-dark": "#2A1B1F",
+          },
+          fontFamily: {
+            "display": ["Playfair Display", "serif"],
+            "script": ["Alex Brush", "cursive"],
+            "sans": ["Montserrat", "sans-serif"],
+          },
+        },
+      },
+    }
+  </script>
+<style data-purpose="custom-animations">
+    @layer base {
+      html { scroll-behavior: smooth; }
+      body { font-family: "Montserrat", sans-serif; overflow-x: hidden; }
+    }
+
+    .section-container {
+      @apply min-h-screen flex flex-col items-center justify-center py-24 px-6 relative;
+    }
+
+    /* Falling Petals Animation */
+    .petal {
+      position: fixed;
+      z-index: 50;
+      pointer-events: none;
+      background: radial-gradient(circle at 30% 30%, #fde2e8, #E7A1B0);
+      opacity: 0.6;
+      border-radius: 10% 80% 30% 80%;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      animation: falling linear infinite;
+    }
+
+    @keyframes falling {
+      0% { transform: translate(0, -10vh) rotate(0deg) scale(0.6); opacity: 0; }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.7; }
+      100% { transform: translate(40px, 110vh) rotate(360deg) scale(0.8); opacity: 0; }
+    }
+
+    /* Scroll Reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 1s ease-out;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Equalizer for Music Player */
+    .equalizer-bar {
+      background-color: #E7A1B0;
+      width: 2px;
+      animation: equalize 1s infinite ease-in-out;
+      transform-origin: bottom;
+    }
+    @keyframes equalize {
+      0%, 100% { transform: scaleY(0.3); }
+      50% { transform: scaleY(1); }
+    }
+  </style>
+</head>
+<body class="bg-background-light text-gray-800 overflow-hidden">
+<!-- BEGIN: Entry Overlay -->
+<div class="fixed inset-0 z-[200] flex items-center justify-center transition-all duration-1000 bg-overlay-dark" id="entry-overlay">
+<div class="absolute inset-0 opacity-40 bg-center bg-cover" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCW7hDDpcO7sai02ZlQdIS955Gp2fw_Pb8sSuUr72kM1Fg7nJCGYW8dL9cPC3lL-OQIz3DAGe8vQrmqx3-m3WZ8LkaRsViqVuB7rbxymmy4xwl1d9UBP_4L1vLa80sw9FfwlPyNDd69DNB-3dmj2sRxrHRZ25ibLzBLnuSrfCVGIXgMk4lOVaaeS6QPPYa-kd51ER_Eb4JPgIf0Vhq16JU4Iq3OJKTappjd2bSskB7EdRfmaAYtW5HVy6i8Q5TwqKWghQ');"></div>
+<div class="relative z-10 text-center px-4 max-w-lg">
+<span class="material-symbols-outlined text-gold text-6xl mb-4 animate-pulse">star</span>
+<h2 class="font-script text-primary text-5xl md:text-7xl mb-2">Samantha</h2>
+<p class="font-display italic text-white text-xl mb-8">"Un momento esperado, un sueño hecho realidad."</p>
+<button class="group relative px-10 py-4 bg-primary text-white font-bold uppercase tracking-widest rounded-full overflow-hidden shadow-2xl transition-all hover:scale-105" id="enter-btn">
+<span class="relative z-10">Entrar a la Invitación</span>
+<div class="absolute inset-0 bg-gold translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+</button>
+<p class="mt-4 text-white/50 text-xs flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">music_note</span> La música comenzará al entrar
+      </p>
+</div>
+</div>
+<!-- END: Entry Overlay -->
+<!-- BEGIN: Petal Container -->
+<div class="fixed inset-0 pointer-events-none z-[100]" id="petal-container"></div>
+<!-- END: Petal Container -->
+<!-- BEGIN: Header & Navigation -->
+<header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-primary/10 px-4 py-2">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<h1 class="font-script text-3xl text-primary">Samantha</h1>
+</div>
+<!-- Countdown -->
+<div class="flex gap-4 items-center">
+<div class="flex flex-col items-center">
+<span class="font-bold text-gold" id="days">--</span>
+<span class="text-[10px] uppercase opacity-60">Días</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-bold text-gold" id="hours">--</span>
+<span class="text-[10px] uppercase opacity-60">Hrs</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-bold text-gold" id="minutes">--</span>
+<span class="text-[10px] uppercase opacity-60">Min</span>
+</div>
+</div>
+<!-- Music Player -->
+<button class="flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-full border border-primary/20 hover:bg-primary/20 transition-all" id="music-btn">
+<div class="flex items-end gap-[2px] h-4" id="player-icon">
+<span class="material-symbols-outlined text-primary text-xl">music_note</span>
+<div class="hidden flex items-end gap-[2px] h-full" id="eq">
+<div class="equalizer-bar" style="height: 60%; animation-delay: 0.1s"></div>
+<div class="equalizer-bar" style="height: 100%; animation-delay: 0.3s"></div>
+<div class="equalizer-bar" style="height: 40%; animation-delay: 0.2s"></div>
+</div>
+</div>
+<div class="text-left">
+<p class="text-[9px] uppercase font-bold text-primary leading-none">Reproduciendo</p>
+<p class="text-[11px] font-semibold text-gray-700 leading-none">Videmar Waltz</p>
+</div>
+</button>
+</div>
+</header>
+<!-- END: Header & Navigation -->
+<!-- Audio Element -->
+<audio id="bg-music" loop="">
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"/>
+</audio>
+<main class="pt-24">
+<!-- BEGIN: Hero Section -->
+<section class="section-container !p-0 overflow-hidden" id="inicio">
+<div class="absolute inset-0 bg-fixed bg-center bg-cover scale-110" style="background-image: linear-gradient(rgba(255,249,250,0.4), rgba(255,249,250,0.8)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuDxkcDodf3WqjaLNEfCkhVNZZJXZOeMDjSN3Fw_IGSHPpNDkm5h9jCJWaid4denmGco4m9AEwfpCaVMaKbtVKqR9NiU255M2LVoep29WbnUAqqWUHjuk7nh8NCKSL7HAhrz4HPAQhu_APhA0CrOTiC3UmT-ZQVHBDxB70HOGhWZf59i8eMWCw7-UXUmfQQ9YYMYI9y7zQVkOJ-hDY1NSAS3KZMO6IEiEdMPh19Z2VJeEX1CzYri4rH8jcZig5JL7tOlZA');"></div>
+<div class="relative z-10 text-center px-6 reveal">
+<p class="uppercase tracking-[0.4em] text-sm text-gold font-bold mb-4">Mis Quince Años</p>
+<h2 class="font-script text-7xl md:text-9xl text-primary mb-6">Samantha</h2>
+<p class="font-display italic text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto">
+          "Doy gracias a Dios por darme el regalo de la vida y permitirme compartir este sueño con las personas que más amo."
+        </p>
+<div class="mt-12 flex justify-center">
+<span class="material-symbols-outlined text-primary animate-bounce text-4xl">expand_more</span>
+</div>
+</div>
+</section>
+<!-- END: Hero Section -->
+<!-- BEGIN: Parents & Godparents -->
+<section class="section-container bg-white">
+<div class="max-w-4xl w-full text-center space-y-16 reveal">
+<div>
+<h3 class="font-display text-gold uppercase tracking-widest text-sm font-bold mb-8">Con la bendición de mis padres</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="p-6 rounded-2xl border border-primary/10 bg-background-light">
+<p class="font-script text-3xl text-primary">Samuel López Alcíbar</p>
+</div>
+<div class="p-6 rounded-2xl border border-primary/10 bg-background-light">
+<p class="font-script text-3xl text-primary">Eunice Nahyr Atilano Hernández</p>
+</div>
+</div>
+</div>
+<div>
+<h3 class="font-display text-gold uppercase tracking-widest text-sm font-bold mb-8">Mi Madrina</h3>
+<div class="inline-block px-12 py-6 rounded-2xl border-2 border-gold/20 bg-background-light">
+<p class="font-script text-3xl text-primary">Nancy Mejía Hernández</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Parents & Godparents -->
+<!-- BEGIN: The Events -->
+<section class="section-container bg-background-light" id="celebracion">
+<div class="max-w-6xl w-full">
+<div class="text-center mb-16 reveal">
+<h2 class="font-display text-4xl md:text-5xl font-bold text-gray-800">La Celebración</h2>
+<div class="h-1 w-24 bg-gold mx-auto mt-4 rounded-full"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Church Card -->
+<div class="bg-white rounded-[2rem] p-10 shadow-xl border border-primary/5 hover:shadow-2xl transition-shadow reveal">
+<div class="flex items-center gap-4 mb-6">
+<div class="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">church</span>
+</div>
+<h4 class="text-2xl font-bold">Misa de Acción de Gracias</h4>
+</div>
+<div class="space-y-4 mb-8 text-gray-600">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-gold">calendar_month</span>
+<span>Sábado, 19 de Septiembre, 2026</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-gold">schedule</span>
+<span>05:30 p.m.</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-gold">location_on</span>
+<span>Catedral Metropolitana de Tulancingo</span>
+</div>
+</div>
+<a class="block w-full py-4 text-center bg-gold text-white font-bold rounded-xl hover:bg-gold/90 transition-colors" href="https://maps.google.com" target="_blank">
+              Ver Ubicación
+            </a>
+</div>
+<!-- Reception Card -->
+<div class="bg-white rounded-[2rem] p-10 shadow-xl border border-primary/5 hover:shadow-2xl transition-shadow reveal">
+<div class="flex items-center gap-4 mb-6">
+<div class="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">celebration</span>
+</div>
+<h4 class="text-2xl font-bold">Recepción</h4>
+</div>
+<div class="space-y-4 mb-8 text-gray-600">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-gold">calendar_month</span>
+<span>Sábado, 19 de Septiembre, 2026</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-gold">schedule</span>
+<span>07:00 p.m.</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-gold">location_on</span>
+<span>Salón Videmar</span>
+</div>
+</div>
+<a class="block w-full py-4 text-center bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-colors" href="https://maps.google.com" target="_blank">
+              Ver Ubicación
+            </a>
+</div>
+</div>
+</div>
+</section>
+<!-- END: The Events -->
+<!-- BEGIN: Gallery -->
+<section class="section-container bg-white" id="galeria">
+<div class="max-w-6xl w-full px-4">
+<div class="text-center mb-12 reveal">
+<span class="material-symbols-outlined text-gold text-5xl mb-4">photo_library</span>
+<h2 class="font-display text-4xl font-bold">Instantes</h2>
+</div>
+<div class="columns-1 md:columns-3 gap-4 space-y-4">
+<!-- Note: Using placeholders since only one image was provided -->
+<div class="reveal">
+<img alt="Samanta 1" class="rounded-2xl cursor-pointer hover:opacity-90 transition-opacity gallery-item" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmesbL8QgRd-pNDpABt-yEij1Criyn49dxLtDJiFOuEusAuU4ZXq0Dbq1ZjmS25s47xANAZS3DrjekgYHeL-kjL9MEQNvJtfO-QQEeQ9vsQnn7FFU6p7R3ae3I3QSytpG7mALwAz_8D0RuX8tvO-JRnys2FkgClq6zhx4FLQgLSv3Nz8QSMDfXao30Lrki790SB41ohIuZTMaViMrU-Q5NcVc_DwwOPaSclEnxFRRgDLqIFMUEXMJRg-XBwdERH0t5aA"/>
+</div>
+<div class="reveal">
+<img alt="Samanta 2" class="rounded-2xl cursor-pointer hover:opacity-90 transition-opacity gallery-item" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbxdPSuRrPEYy8C5SZ4005UHgCpTF80YBwtWPeLsCfKrmT80ze4JVIhh1SQsDip8ru74IUNBZ1pMGUuq37KmM6_HCQRZAtTeuXszjmOds07jjNr1GNvUdkkykITRWS3uPZZ9Uy84gnLyoFHE9AWmZ5FwokJv-53BU42_46__lOkUMcWYmF6hSorVsvQv6Bsj1g2wi-7ra3oJsqzWzb1lBCz-rTCIU0si3iDLlDLLSjkd0dww9iajdK"/>
+</div>
+<div class="reveal">
+<img alt="Samanta 3" class="rounded-2xl cursor-pointer hover:opacity-90 transition-opacity gallery-item" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxJ42FDSQHPCYUw-MdvgO0foFvzBwrk3geoCSbaqcHMye5SfpXNCix5ymoxDhlUdYDzOYD1ez7UrYeN-DOJ2kn9tArMs-bjyMdzJBq2hEyx0RpdI7ynwIy_UkSt9UDErhVO7jX6te7jtnYu_g5HN6IL2C9qWPrBELNUq3tfudc38hpKVS2l2iDlLHwXfi1ISCbkpeDa5AmVOiki0wI1n9S_q25rVU-aSoayAQagW83bZw2eAOpUDo0"/>
+</div>
+<div class="reveal">
+<img alt="Samanta 4" class="rounded-2xl cursor-pointer hover:opacity-90 transition-opacity gallery-item" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_OXxdYNFqGLFxSL1BumQeDqx5Oz-UL1K7Y40qjtYGmbuu-_RHxQO0OpNrhRqd31csVGIJazRhuvDwy1f9WxAWJhT8CF9epL2afqVpejy7e7AwZhws8ypP8pdv8Q7GlQCy8FngvqomkGj6iOPDwLbKnPWzBsQB4olR8xIRx6NJoG842k3v58W3-H2WFkbBRjLDwLcCX4BwdKDNiBXEGIChFwTdfEVmn-m1AXuvlPTdnE9QBwBheTUt"/>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Gallery -->
+<!-- BEGIN: RSVP -->
+<section class="section-container bg-primary/5" id="rsvp">
+<div class="max-w-2xl w-full reveal">
+<div class="bg-white p-10 md:p-16 rounded-[3rem] shadow-2xl border border-primary/10">
+<div class="text-center mb-10">
+<span class="material-symbols-outlined text-primary text-5xl mb-4">mail_outline</span>
+<h2 class="font-display text-3xl font-bold mb-2">Confirmar Asistencia</h2>
+<p class="text-gray-500">Por favor, confírmanos antes del 31 de Agosto de 2026.</p>
+<p class="text-primary font-bold text-sm mt-2">Máximo 7 personas por invitación.</p>
+</div>
+<form class="space-y-6" id="rsvp-form">
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Nombre Completo</label>
+<input class="w-full px-6 py-4 rounded-xl border-gray-100 bg-gray-50 focus:border-primary focus:ring-primary transition-all" id="name" required="" type="text"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Asistentes</label>
+<select class="w-full px-6 py-4 rounded-xl border-gray-100 bg-gray-50 focus:border-primary focus:ring-primary transition-all" id="guests">
+<option value="1">1 Persona</option>
+<option value="2">2 Personas</option>
+<option value="3">3 Personas</option>
+<option value="4">4 Personas</option>
+<option value="5">5 Personas</option>
+<option value="6">6 Personas</option>
+<option value="7">7 Personas</option>
+</select>
+</div>
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">¿Asistirás?</label>
+<select class="w-full px-6 py-4 rounded-xl border-gray-100 bg-gray-50 focus:border-primary focus:ring-primary transition-all" id="status">
+<option value="Asistiré con gusto">Sí, asistiré con gusto</option>
+<option value="No podré asistir">Lamentablemente no podré</option>
+</select>
+</div>
+</div>
+<button class="w-full py-5 bg-primary text-white font-black uppercase tracking-widest rounded-xl shadow-lg hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3" onclick="sendToWhatsapp()" type="button">
+<span class="material-symbols-outlined">send</span>
+              Enviar por WhatsApp
+            </button>
+</form>
+</div>
+</div>
+</section>
+<!-- END: RSVP -->
+<footer class="py-12 text-center bg-overlay-dark text-white">
+<p class="font-script text-3xl text-primary mb-4">Samantha</p>
+<p class="text-xs uppercase tracking-[0.3em] opacity-40">19 • 09 • 2026 • Tulancingo, Hgo</p>
+</footer>
+</main>
+<!-- BEGIN: Lightbox -->
+<div class="fixed inset-0 z-[300] bg-black/95 hidden items-center justify-center p-4 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="lightbox">
+<button class="absolute top-8 right-8 text-white" id="close-lightbox">
+<span class="material-symbols-outlined text-4xl">close</span>
+</button>
+<img class="max-h-[85vh] max-w-full rounded-lg shadow-2xl scale-95 transition-transform duration-300" id="lightbox-img" src=""/>
+</div>
+<!-- END: Lightbox -->
+<script data-purpose="interaction-logic">
+    document.addEventListener('DOMContentLoaded', () => {
+      const entryOverlay = document.getElementById('entry-overlay');
+      const enterBtn = document.getElementById('enter-btn');
+      const audio = document.getElementById('bg-music');
+      const musicBtn = document.getElementById('music-btn');
+      const eq = document.getElementById('eq');
+      const playerIcon = document.querySelector('#player-icon .material-symbols-outlined');
+
+      // --- Entry Logic ---
+      enterBtn.addEventListener('click', () => {
+        entryOverlay.classList.add('opacity-0', 'pointer-events-none');
+        document.body.classList.remove('overflow-hidden');
+        toggleMusic(true);
+      });
+
+      // --- Music Logic ---
+      let isPlaying = false;
+      function toggleMusic(forcePlay = false) {
+        if (!isPlaying || forcePlay) {
+          audio.play();
+          isPlaying = true;
+          eq.classList.remove('hidden');
+          eq.classList.add('flex');
+          playerIcon.classList.add('hidden');
+        } else {
+          audio.pause();
+          isPlaying = false;
+          eq.classList.add('hidden');
+          eq.classList.remove('flex');
+          playerIcon.classList.remove('hidden');
+        }
+      }
+      musicBtn.addEventListener('click', () => toggleMusic());
+
+      // --- Countdown Logic ---
+      const targetDate = new Date('September 19, 2026 17:30:00').getTime();
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const diff = targetDate - now;
+        if (diff < 0) return;
+
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+        document.getElementById('days').innerText = d.toString().padStart(2, '0');
+        document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+        document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+      }
+      setInterval(updateCountdown, 1000);
+      updateCountdown();
+
+      // --- Petal Animation ---
+      const petalContainer = document.getElementById('petal-container');
+      function createPetal() {
+        const p = document.createElement('div');
+        p.className = 'petal';
+        const size = Math.random() * 15 + 10;
+        p.style.width = `${size}px`;
+        p.style.height = `${size}px`;
+        p.style.left = `${Math.random() * 100}vw`;
+        p.style.animationDuration = `${Math.random() * 5 + 7}s`;
+        p.style.animationDelay = `${Math.random() * 5}s`;
+        petalContainer.appendChild(p);
+        
+        // Cleanup after animation
+        setTimeout(() => p.remove(), 12000);
+      }
+      setInterval(createPetal, 600);
+
+      // --- Scroll Reveal ---
+      const reveals = document.querySelectorAll('.reveal');
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      }, { threshold: 0.1 });
+      reveals.forEach(r => revealObserver.observe(r));
+
+      // --- Lightbox ---
+      const lightbox = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lightbox-img');
+      const closeLb = document.getElementById('close-lightbox');
+      document.querySelectorAll('.gallery-item').forEach(item => {
+        item.addEventListener('click', () => {
+          lbImg.src = item.src;
+          lightbox.classList.remove('hidden');
+          setTimeout(() => {
+            lightbox.classList.add('flex', 'opacity-100');
+            lbImg.classList.remove('scale-95');
+            lbImg.classList.add('scale-100');
+          }, 10);
+        });
+      });
+      closeLb.addEventListener('click', () => {
+        lightbox.classList.remove('opacity-100');
+        setTimeout(() => lightbox.classList.add('hidden'), 300);
+      });
+    });
+
+    // --- WhatsApp RSVP ---
+    function sendToWhatsapp() {
+      const name = document.getElementById('name').value;
+      const guests = document.getElementById('guests').value;
+      const status = document.getElementById('status').value;
+      
+      if(!name) return alert("Por favor escribe tu nombre");
+
+      const text = `*Confirmación XV Años Samantha*\n\nHola, soy: *${name}*\nEstatus: *${status}*\nNúmero de asistentes: *${guests}*`;
+      const encoded = encodeURIComponent(text);
+      window.open(`https://wa.me/5217750000000?text=${encoded}`, '_blank'); // Placeholder number
+    }
+  </script>
+</body></html>

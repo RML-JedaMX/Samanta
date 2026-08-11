@@ -475,7 +475,7 @@
       
       if(!name) return alert("Por favor escribe tu nombre");
 
-      const text = `*Confirmación XV Años Samantha*\n\nHola, soy: *${name}*\nEstatus: *${status}*\nNúmero de asistentes: *${guests}*`;
+      const text = `*Confirmación XV Años Samantha*\n\nSi asistiran menos personas favor de notificar en este mensaje \n\nHola, soy: *${name}*\nEstatus: *${status}*\nNúmero de asistentes: *${guests}*`;
       const encoded = encodeURIComponent(text);
       window.open(`https://wa.me/5217751256238?text=${encoded}`, '_blank'); // Placeholder number
     }
